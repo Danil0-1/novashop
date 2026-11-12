@@ -1,0 +1,10 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {addItem,changeQty,removeItem,cartTotal,filterProducts,loadCart,saveCart} from '../js/store.js';
+import {PRODUCTS,normalizeApiProducts} from '../js/catalog.js';
+test('agrega y aumenta cantidades',()=>{const first=addItem([],1);assert.deepEqual(addItem(first,1),[{id:1,qty:2}]);assert.deepEqual(first,[{id:1,qty:1}])});
+test('cambio de cantidad y eliminación',()=>{assert.deepEqual(changeQty([{id:1,qty:1}],1,-1),[]);assert.deepEqual(removeItem([{id:1,qty:2}],1),[])});
+test('total exacto en COP',()=>assert.equal(cartTotal([{id:1,qty:2}],PRODUCTS),379800));
+test('filtrado por categoría y búsqueda',()=>{const result=filterProducts(PRODUCTS,'mouse','Periféricos');assert.equal(result.length,1);assert.match(result[0].name,/Mouse/)});
+test('orden de precios',()=>{const rows=filterProducts(PRODUCTS,'','all','price-asc');assert.ok(rows[0].price<=rows[1].price)});
+test('persistencia y datos dañados',()=>{const memory={value:null,getItem(){return this.value},setItem(_,v){this.value=v}};assert.equal(saveCart([{id:1,qty:1}],memory),true);assert.deepEqual(loadCart(memory),[{id:1,qty:1}]);memory.value='no json';assert.deepEqual(loadCart(memory),[])});
+test('normalización API y validación',()=>{assert.equal(normalizeApiProducts([{id:1,title:'Ejemplo',price:2}])[0].price,8000);assert.throws(()=>normalizeApiProducts({}))});
