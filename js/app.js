@@ -14,5 +14,5 @@ $('checkoutBtn').addEventListener('click',()=>{if(!cart.length)return;const tota
 for(const id of ['searchInput','categoryFilter','sortFilter'])$(id).addEventListener(id==='searchInput'?'input':'change',renderProducts);
 $('resetFilters').addEventListener('click',()=>{$('searchInput').value='';$('categoryFilter').value='all';$('sortFilter').value='featured';renderProducts()});
 renderProducts();renderCart();
-// Integración REST progresiva: falla de red => catálogo local sigue operativo.
+// Integraciónn REST progresiva: falla de red => catálogo local sigue operativo.
 (async()=>{try{const external=await fetchExternalProducts();if(external.length){products=[...PRODUCTS,...external];const filter=$('categoryFilter');const opt=document.createElement('option');opt.value='API REST';opt.textContent='API REST (externos)';filter.append(opt);$('sourceStatus').textContent=`Catálogo local + ${external.length} productos de API REST`;renderProducts();renderCart()}}catch{$('sourceStatus').textContent='Modo local: API REST no disponible'}})();
